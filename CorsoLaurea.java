@@ -46,7 +46,8 @@ public class CorsoLaurea {
 			case 2: {
 				System.out.println("Inserire il nome dello studente");
 				String nomeStudente = in.next();
-				listaStudenti.get(MenuStudente(nomeStudente)).MenuEsami();
+				if (MenuStudente(nomeStudente))
+					MenuEsami(nomeStudente);
 			}
 				;
 				break;
@@ -122,13 +123,12 @@ public class CorsoLaurea {
 	}
 
 	// Menu che permette l'iterazione con tutte le operazioni riguardanti gli esami
-	public int MenuStudente(String nome) {
-		for (int i = 0; i < listaStudenti.size(); i++)
+	public boolean MenuStudente(String nome) {
 			if (CercaNome(nome))
-				return i;
+				return true;
 			else
 				System.out.println("Lo studente non è iscritto a questo corso di laurea");
-		return -1;
+		return false;
 	}
 
 	// Stampa gli studenti che sono presenti nella lista
@@ -214,7 +214,7 @@ public class CorsoLaurea {
 						if (risposta == 0) {
 							System.out.println("Inserire i crediti dell'esame " + nome);
 							int crediti = in.nextInt();
-							if (listaStudenti.get(i).AggiungiEsame(nome, crediti))
+							if (AggiungiEsame(listaStudenti.get(i).getNome(), nome, crediti))
 								System.out.println("Esame aggiunto");
 						}
 					}
@@ -223,10 +223,11 @@ public class CorsoLaurea {
 					System.out.println("Vuoi crearlo? [0/1]");
 					int risposta = in.nextInt();
 					if (risposta == 0)
-						if (listaStudenti.get(i).CreaPiano())
+						if (CreaPiano(listaStudenti.get(i).getNome()))
 							System.out.println("Piano creato");
 				}
 			}
+		}
 			if (flag1) {
 				System.out.println("Studente non presente nella lista, vuoi aggiungerlo? [0/1]");
 				int risposta = in.nextInt();
@@ -234,7 +235,6 @@ public class CorsoLaurea {
 					if (Iscrizione(nome))
 						System.out.println("Studente creato");
 			}
-		}
 	}
 
 	// Passo il nome dello studente
@@ -247,14 +247,15 @@ public class CorsoLaurea {
 	// dello studente
 	// Calcolo la media dei voti e la stampo
 	public void VisualizzaEsami(String nome) {
-
+		boolean flag = true;
 		for (int i = 0; i < listaStudenti.size(); i++)
 			if (listaStudenti.get(i).getNome().equals(nome)) {
-
+				flag = false;
 				if (listaStudenti.get(i).getListaEsami().size() != 0) {
 
 					System.out.println(nome + " ha sostenuto i seguenti esami");
 					for (int j = 0; j < listaStudenti.get(i).getListaEsami().size(); j++)
+						if( listaStudenti.get(i).getListaEsami().get(j).getVoto() != 0)
 						System.out.println(listaStudenti.get(i).getListaEsami().get(j).getNome());
 
 					System.out.println("Ha un totale di " + listaStudenti.get(i).getCrediti() + " crediti");
@@ -264,10 +265,11 @@ public class CorsoLaurea {
 					System.out.println("Vuoi crearlo? [0/1]");
 					int risposta = in.nextInt();
 					if (risposta == 0)
-						if (listaStudenti.get(i).CreaPiano())
+						if (CreaPiano(listaStudenti.get(i).getNome()))
 							System.out.println("Piano creato");
 				}
-			} else {
+			} 
+			if(flag) {
 				System.out.println("Studente non presente nella lista, vuoi aggiungerlo? [0/1]");
 				int risposta = in.nextInt();
 				if (risposta == 0)
@@ -298,6 +300,124 @@ public class CorsoLaurea {
 				media = (float) sommaVoti / listaStudenti.get(i).getCrediti();
 			}
 		return media;
+	}
+
+	// Menu per gestire la lista degli esami dello studente
+	public void MenuEsami(String nomeStudente) {
+		int input;
+		do {
+			do {
+				System.out.println('\n' + "Benvenuto nel corso di laurea di ingegneria\nCosa vuoi fare" + '\n');
+				System.out.println("1) Creare un piano di studio");
+				System.out.println("2) Aggiungere un esame al piano di studio");
+				System.out.println("3) Rimuovere un esame al piano di studio");
+				System.out.println("4) Cercare un esame nel piano di studio");
+				System.out.println("0) Esci");
+				input = in.nextInt();
+			} while (input <= 0 && input >= 4);
+
+			switch (input) {
+			case 1: {
+				if (CreaPiano(nomeStudente)) // FATTO - boolean
+					System.out.println("Piano aggiunto");
+				else
+					System.out.println("Piano già presente");
+			}
+				;
+				break;
+			case 2: {
+				System.out.println("Inserire il nome dell'esame e i crediti da aggiungere al piano di studio");
+				String nome = in.next();
+				int crediti = in.nextInt();
+				if (AggiungiEsame(nomeStudente, nome, crediti)) // FATTO - boolean
+					System.out.println("Esame aggiunto");
+				else
+					System.out.println("Esame già presente nel piano di studio");
+			}
+				;
+				break;
+			case 3: {
+				System.out.println("Inserire il nome dell'esame da rimuovere dal piano di studio");
+				String nome = in.next();
+				if (RimuoviEsame(nomeStudente, nome))
+					System.out.println("Esame rimosso");
+				else
+					System.out.println("Esame non presente nel piano di studio");
+			}
+				;
+				break;
+			case 4: {
+				System.out.println("Inserire il nome dell'esame da cercare nel piano di studio");
+				String nome = in.next();
+				if (CercaEsame(nomeStudente, nome))
+					System.out.println("Esame presente nel piano di studi");
+				else
+					System.out.println("Esame non presente nel piano di studio");
+			}
+				;
+				break;
+			case 0:
+				return;
+			}
+		} while (true);
+	}
+
+	// Crea un piano tramite il metodo 'AggiungiEsame' chiamato ripetutamente fino
+	// alla fine del ciclo
+	public boolean CreaPiano(String nomeStudente) {
+		int risposta;
+		for (int i = 0; i < listaStudenti.size(); i++)
+			if (listaStudenti.get(i).getNome().equals(nomeStudente))
+				if (listaStudenti.get(i).getListaEsami().size() == 0) {
+					do {
+						System.out.println("Inserire il nome dell'esame ed i crediti");
+						String nome = in.next();
+						int crediti = in.nextInt();
+						if (AggiungiEsame(nomeStudente, nome, crediti))
+							System.out.println("Esame aggiunto");
+						System.out.println("Vuole continuare ad inserire esami? [0/1]");
+						risposta = in.nextInt();
+					} while (risposta == 0);
+					return true;
+				}
+		return false;
+	}
+
+	// Metodo per l'aggiunta di un'esame
+	public boolean AggiungiEsame(String nomeStudente, String nome, int crediti) {
+		int voto = 0;
+		for (int i = 0; i < listaStudenti.size(); i++) {
+			if (listaStudenti.get(i).getNome().equals(nomeStudente))
+				if (!CercaEsame(nomeStudente, nome)) {
+					listaStudenti.get(i).getListaEsami().add(new Esami(nome, crediti, voto));
+					return true;
+				}
+		}
+		return false;
+	}
+
+	// Rimuove l'esame se è presente nella lista
+	public boolean RimuoviEsame(String nomeStudente, String nome) {
+		for (int i = 0; i < listaStudenti.size(); i++) {
+			if (listaStudenti.get(i).getNome().equals(nomeStudente))
+				for (int j = 0; j < listaStudenti.get(i).getListaEsami().size(); j++)
+					if (listaStudenti.get(i).getListaEsami().get(i).getNome().equals(nome)) {
+						listaStudenti.get(i).getListaEsami().remove(i);
+						return true;
+					}
+		}
+		return false;
+	}
+
+	// Cerca un'esame all'interno della lista, se è presente resituisce vero
+	public boolean CercaEsame(String nomeStudente, String nome) {
+		for (int i = 0; i < listaStudenti.size(); i++) {
+			if (listaStudenti.get(i).getNome().equals(nomeStudente))
+				for (int j = 0; j < listaStudenti.get(i).getListaEsami().size(); j++)
+					if (listaStudenti.get(i).getListaEsami().get(j).getNome().equals(nome))
+						return true;
+		}
+		return false;
 	}
 
 	// Getter e setter
