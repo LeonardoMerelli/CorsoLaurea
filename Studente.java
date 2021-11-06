@@ -1,227 +1,168 @@
-package Es2;
+package Es1;
 
 import java.util.*;
 
+public class Studente {
 
-
-public class Studente 
-{
-	Scanner in = new Scanner (System.in);
+	Scanner in = new Scanner(System.in);
 	private String nome;
-	
-	protected static ArrayList<Studente> listaStudenti= new ArrayList<>();
-	protected static ArrayList<Studente> listaStudentiLaureati= new ArrayList<>();
-	
-	private static int matricola = 1000000;
-	private int matricolaStu;
-	private int creditiStu;
-	
-	Esami e;
-	
-	public Studente(String nome, int crediti) 
-	{
+
+	private ArrayList<Esami> listaEsami = new ArrayList<>();
+	private static int ultimaMatricola = 1000000;
+	private int matricola;
+	private int crediti;
+
+	// Costruttore
+	public Studente(String nome) {
 		this.nome = nome;
-        this.matricolaStu= matricola;
-        matricola++;
-        creditiStu = crediti;
-	}
-	
-	public boolean Iscrizione(String nome, Studente s)
-	{
-		if (CercaS(nome))return false;
-	    listaStudenti.add(s);
-		return true;
-	}
-	
-	public boolean CercaS(String nome)
-	{
-		for (int i = 0; i<listaStudenti.size();i++)
-		{
-		  if (listaStudenti.get(i).getNome().equals(nome)) return true;
-		}
-		return false;
+		matricola = ultimaMatricola;
+		ultimaMatricola++;
 	}
 
-	public boolean Ritira(String nome)
-	{
-		for (int i = 0; i<listaStudenti.size(); i++)
-		{
-			if (listaStudenti.get(i).getNome().equals(nome)) 
-				{
-				  listaStudenti.remove(i);		
-				  return true;
-				}
-		}
-		return false;
-	}
-	
-	public boolean CreaPiano (String nome)
-	{
+	// Menu per gestire la lista degli esami dello studente
+	public void MenuEsami() {
 		int input;
-		if (CercaS(nome)) 
-		{
-		for (int i = 0;i<listaStudenti.size();i++)
-		{
-			if (listaStudenti.get(i).getNome().equals(nome)) 
-			{
-				do 
-				{
-					System.out.println("-> Nome dell'esame:");
-					String nomeEsame = in.next();
-					
-					System.out.println("-> Crediti dell'esame:");
-					int creditiEsame = in.nextInt();
-					
-					e = new Esami(nomeEsame, creditiEsame,0);
-					if (!e.CercaE(nomeEsame)) e.AggiungiEsame(nomeEsame,creditiEsame,i);
-					
-					else System.out.println("-> Esame gia presente:" + '\n');
-					System.out.println('\n'+"1) Continua");
-					System.out.println("0) Torna al menu");
-					input = in.nextInt();
-				}while(input != 0);
-			  return true;
-			}
-		}
-		}
-		return false;
-		
-	}
-
-	public void VisualizzaStudenti()
-	{
-		for (int i = 0; i<listaStudenti.size();i++)
-	    {
-			
-	    System.out.println("-> Nome: " + listaStudenti.get(i).getNome() + '\n' + "   Matricola: " + listaStudenti.get(i).getMatricola() +
-	    		'\n' + "   Crediti totoali: " + listaStudenti.get(i).getCreditiStu() );
-	    if(Esami.listaEsami!= null)
-	    {
-	    	for (int j= 0; j< Esami.listaEsami.size();j++)
-	    	{
-	    	
-	    		if (!e.controlloVoto(Esami.listaEsami.get(j).getVoto()))  
-	    			System.out.println("-> Nome esame: " + Esami.listaEsami.get(j).getNome() + 
-	    					'\n' + "	-> Crediti esame: " + Esami.listaEsami.get(j).getCrediti() + 
-	    					'\n' + "	-> Voto esame: ESAME NON FATTO");
-	    		else System.out.println("-> Nome esame: " + Esami.listaEsami.get(j).getNome() + 
-	    				'\n' + "	-> Crediti esame: " + Esami.listaEsami.get(j).getCrediti() + 
-	    				'\n' + "	-> Voto esame: " + Esami.listaEsami.get(j).getVoto());
-	    	}
-	    }
-	    else System.out.println("Piano di studio vuoto");
-	}
-	}
-	
-	/*public void VisualizzaLaureati()
-	{
-		//controlo per studetni con crediti giusti
-		for (int i = 0; i<listaStudenti.size();i++)
-	    {
-			if (listaStudenti.get(i).getCrediti() > 179) //crediti di un singolo studente
-			{
-				System.out.println("-> Nome: " + listaStudenti.get(i).getNome() + '\n' + "-> Matricola: " + listaStudenti.get(i).getMatricola());
-	  
-				for (int j= 0; j< e.listaEsami.size();j++)
-				{
-	    	
-					if (e.controlloVoto(e.listaEsami.get(j).getVoto()))  
-						System.out.println("-> Nome esame: " + e.listaEsami.get(j).getNome() + 
-								'\n' + "-> Crediti esame: " + e.listaEsami.get(j).getCrediti() + 
-								'\n' + "-> Voto esame: ESAME NON FATTO");
-					else System.out.println("-> Nome esame: " + e.listaEsami.get(j).getNome() + 
-							'\n' + "-> Crediti esame: " + e.listaEsami.get(j).getCrediti() + 
-							'\n' + "-> Voto esame: " + e.listaEsami.get(j).getVoto());
-				}
-			}
-	    }
-		
-	}*/
-	
-	
-	
-
-	public void Menu2()
-	{
-		int input;
-		do 
-		{
-			do 
-			{
-				System.out.println('\n' + "Menu Piano Di Studio" + '\n' +"Cosa vuoi fare" + '\n');
-				System.out.println("1) Aggingi esame");
-				System.out.println("2) Cerca esame");
-				System.out.println("3) Rimuovi esame");
-				System.out.println("4) Promozione");
-				System.out.println("5) Visualizza Studenti");
-				System.out.println("6) Visualizza Laureati");
+		do {
+			do {
+				System.out.println('\n' + "Benvenuto nel corso di laurea di ingegneria\nCosa vuoi fare" + '\n');
+				System.out.println("1) Creare un piano di studio");
+				System.out.println("2) Aggiungere un esame al piano di studio");
+				System.out.println("3) Rimuovere un esame al piano di studio");
+				System.out.println("4) Cercare un esame nel piano di studio");
 				System.out.println("0) Esci");
 				input = in.nextInt();
-			}while(input <= 0 && input >= 4);
-			
-			switch(input) 
-			{
-			case 1: 
-				{
-					System.out.println ("Quale esame vuoi aggiungere al piano ?");
-					String nome= in.next();
-					System.out.println ("Crediti del dato esame:");
-					int crediti = in.nextInt();
-					e.AggiungiEsame(nome, crediti);	
-				};break;
-			case 2: 
-			    {
-			    	System.out.println ("Quale esame vuoi cercare ?");
-			    	String nome= in.next();
-			    	e.CercaEsame(nome);
-			    };break;
-			case 3: 
-			    {
-			    	System.out.println ("Quale esame vuoi cercare ?");
-			    	String nome= in.next();
-			    	e.RimuoviEsame(nome);
-			    };break;
-			case 4:
-			    {
-			    	int voto;
-			    	do
-			    	{
-			    		System.out.println ("Quale esame Hai passato?");
-				    	String nome= in.next();
-				    	System.out.println ("Voto:");
-				    	voto= in.nextInt();
-				    	switch (e.Promozione(nome, voto))
-				    	{
-				    	case 0: System.out.println ("Esame non presente nella lista esami!!!");break;
-				    	case 1: System.out.println ("Voto non permesso!!!"); break;
-				    	case 2:break;
-				    	}
-			    	}while (e.Promozione(nome, voto) != 2);
-			    	
-			    };break;   
-			case 5:
-		    {
-		    	VisualizzaStudenti();
-		    };break;
-			case 6:
-		    {
-		    	//VisualizzaLaureati();
-		    };break;
-		    
-			case 0:return;
+			} while (input <= 0 && input >= 4);
+
+			switch (input) {
+			case 1: {
+				if (CreaPiano()) // FATTO - boolean
+					System.out.println("Piano aggiunto");
+				else
+					System.out.println("Piano già presente");
 			}
-		}while(true);
-
+				;
+				break;
+			case 2: {
+				System.out.println("Inserire il nome dell'esame e i crediti da aggiungere al piano di studio");
+				String nome = in.next();
+				int crediti = in.nextInt();
+				if (AggiungiEsame(nome, crediti)) // FATTO - boolean
+					System.out.println("Esame aggiunto");
+				else
+					System.out.println("Esame già presente nel piano di studio");
+			}
+				;
+				break;
+			case 3: {
+				System.out.println("Inserire il nome dell'esame da rimuovere dal piano di studio");
+				String nome = in.next();
+				if (RimuoviEsame(nome))
+					System.out.println("Esame rimosso");
+				else
+					System.out.println("Esame non presente nel piano di studio");
+			}
+				;
+				break;
+			case 4: {
+				System.out.println("Inserire il nome dell'esame da cercare nel piano di studio");
+				String nome = in.next();
+				if (CercaEsame(nome))
+					System.out.println("Esame presente nel piano di studi");
+				else
+					System.out.println("Esame non presente nel piano di studio");
+			}
+				;
+				break;
+			case 0:
+				return;
+			}
+		} while (true);
 	}
-	
-	
-	public static int getCreditiStu() { return creditiStu; }
 
-	public static void setCreditiStu(int crediti) { creditiStu = crediti; }
-	
-	public String getNome() { return nome; } 
+	// Crea un piano tramite il metodo 'AggiungiEsame' chiamato ripetutamente fino
+	// alla fine del ciclo
+	public boolean CreaPiano() {
+		int risposta;
+		if (listaEsami.size() == 0) {
+			do {
+				System.out.println("Inserire il nome dell'esame ed i crediti");
+				String nome = in.next();
+				int crediti = in.nextInt();
+				if (AggiungiEsame(nome, crediti))
+					System.out.println("Esame aggiunto");
+				System.out.println("Vuole continuare ad inserire esami? [0/1]");
+				risposta = in.nextInt();
+			} while (risposta == 0);
+			return true;
+		}
+		return false;
+	}
 
-	public void setNome(String nome) { this.nome = nome; }
+	// Metodo per l'aggiunta di un'esame
+	public boolean AggiungiEsame(String nome, int crediti) {
+		int voto = 0;
+		if (!CercaEsame(nome)) {
+			listaEsami.add(new Esami(nome, crediti, voto));
+			return true;
+		} else
+			return false;
+	}
 
-	public int getMatricola() { return matricolaStu; }
+	// Rimuove l'esame se è presente nella lista
+	public boolean RimuoviEsame(String nome) {
+		for (int i = 0; i < listaEsami.size(); i++)
+			if (listaEsami.get(i).getNome().equals(nome)) {
+				listaEsami.remove(i);
+				return true;
+			}
+		return false;
+	}
+
+	// Cerca un'esame all'interno della lista, se è presente resituisce vero
+	public boolean CercaEsame(String nome) {
+		for (int i = 0; i < listaEsami.size(); i++)
+			if (listaEsami.get(i).getNome().equals(nome))
+				return true;
+		return false;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public ArrayList<Esami> getListaEsami() {
+		return listaEsami;
+	}
+
+	public void setListaEsami(ArrayList<Esami> listaEsami) {
+		this.listaEsami = listaEsami;
+	}
+
+	public static int getUltimaMatricola() {
+		return ultimaMatricola;
+	}
+
+	public static void setUltimaMatricola(int ultimaMatricola) {
+		Studente.ultimaMatricola = ultimaMatricola;
+	}
+
+	public int getMatricola() {
+		return matricola;
+	}
+
+	public void setMatricola(int matricola) {
+		this.matricola = matricola;
+	}
+
+	public int getCrediti() {
+		return crediti;
+	}
+
+	public void setCrediti(int crediti) {
+		this.crediti += crediti;
+	}
 }
